@@ -157,16 +157,72 @@
                                 <span class="text-primary">Cycles</span>
                                 <!-- <p class="mb-3 mt-3">Total number of manufactured parts</p> -->
                             </div>
-                            <div class="card-footer border-0">
+                            <div id="data-container">
+                                <!-- Data will be displayed here -->
+                            </div>
+                        
+                            <script>
+                                let timerId = null; // Variable to store the timer ID
+                        
+                                function fetchData() {
+                                    fetch('/api/arduino-results/') // Replace with your Django API endpoint
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            // Sort the data based on the 'ID' field in ascending order
+                                            data.sort((a, b) => a.ID - b.ID);
+                        
+                                            displayDataSequentially(data);
+                                        })
+                                        .catch(error => console.error('Error fetching data:', error));
+                                }
+                        
+                                function displayDataSequentially(data) {
+                                    let currentIndex = 0;
+                        
+                                    function displayNextItem() {
+                                        if (currentIndex < data.length) {
+                                            const currentItem = data[currentIndex];
+                                            const formattedItem = `<p>ID: ${currentItem.ID}, Cycle Number: ${currentItem.cycle_nr}</p>`;
+                                            document.getElementById('data-container').innerHTML = formattedItem;
+                                            currentIndex++;
+                        
+                                            timerId = setTimeout(displayNextItem, 2000); // Display next item after 2 seconds
+                                        }
+                                    }
+                        
+                                    displayNextItem();
+                                }
+                        
+                                // Fetch data initially
+                                fetchData();
+                        
+                                // Fetch data and display every 5 seconds (for example)
+                                setInterval(() => {
+                                    // clearTimeout(timerId); // Clear previous timer before starting a new sequence
+                                    fetchData();
+                                }, 1000);
+                            </script>
+                            <!-- <div class="card-footer border-0">
                                 <div class="row text-center">
                                     <div class="col">
-                                        <h4 class="m-0">178,243/200,000</h4>
-                                        <span>Cycles until overhaul</span>
+                                         <h4 class="m-0"> item.cycle_nr </h4>
+                                        <span>Cycles until overhaul</span> 
+                                        {% for item in data %}
+                                        <div class="card">
+                                            <h3>ID: {{ item.ID }}</h3>
+                                            <p>Cycle Number: {{ item.cycle_nr }}</p>
+                                        </div>
+                                        {% endfor %}
+                                        {% if data %}
+                                            <p>Data exists!</p>
+                                        {% else %}
+                                            <p>No data available.</p>
+                                        {% endif %}
                                     </div>
                                     
                                 </div>
-                            </div>
-                            <!-- <div id="support-chart1"></div> -->
+                            </div> 
+                            <div id="support-chart1"></div> -->
                         </div>
                     </div>
                 
