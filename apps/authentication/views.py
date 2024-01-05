@@ -7,7 +7,8 @@ Copyright (c) 2019 - present AppSeed.us
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm, SignUpForm
-
+from .models import ArduinoResults  # Import your model
+from django.http import JsonResponse
 
 def login_view(request):
     form = LoginForm(request.POST or None)
@@ -54,3 +55,14 @@ def register_user(request):
         form = SignUpForm()
 
     return render(request, "accounts/register.html", {"form": form, "msg": msg, "success": success})
+
+
+def my_view(request):
+    # Fetch data from the model
+    data = ArduinoResults.objects.filter(ID__gt=0).values('ID', 'cycle_nr')
+    
+    return render(request, "home/index.html", {"data": data})
+
+def arduino_results_api(request):
+    data = list(ArduinoResults.objects.filter(ID__gt=0).values('ID', 'cycle_nr'))
+    return JsonResponse(data, safe=False)
