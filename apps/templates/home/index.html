@@ -88,14 +88,40 @@
                             </div>
                             <div class="card-footer border-0">
                                 <div class="row text-center">
-                                    <div class="col">
+                                    <div id="data-container-2" class="m-0">
+                                        <!-- Data will be displayed here -->
+                                        <script>
+                                            let timerId_2 = null; // Variable to store the timer ID                                                
+                                            function fetchData_2() {
+                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
+                                                    .then(response => response.json()) // Convert the response to JSON format
+                                                    .then(data => {
+                                                        // Display the last item from the data array
+                                                        const lastItem = data[data.length - 1];
+                                                        const formattedItem = `</p><strong>Last measured value:</strong> ${lastItem.mean_ambient_temperature} <strong>Mean value:</strong> ${lastItem.mean_ambient_temperature}</p>`;
+                                                        document.getElementById('data-container-2').innerHTML = formattedItem;
+                                                    })
+                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                            }
+                                        
+                                            // Fetch data initially
+                                            fetchData_2();
+                                        
+                                            // Fetch data and display every 5 seconds (for example)
+                                            setInterval(() => {
+                                                fetchData_2(); // Fetch data from the API
+                                            }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
+                                        </script>
+                                       
+                                    </div>
+                                    <!-- <div class="col">
                                         <h4 class="m-0">38.23°C</h4>
                                         <span>Last measured value</span>
                                     </div>
                                     <div class="col">
                                         <h4 class="m-0">38,76°C</h4>
                                         <span>Mean value</span>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                             <!-- <div id="support-chart1"></div> -->
@@ -110,14 +136,40 @@
                             </div>
                             <div class="card-footer border-0">
                                 <div class="row text-center">
-                                    <div class="col">
+                                    <div id="data-container-3" class="m-0">
+                                        <!-- Data will be displayed here -->
+                                        <script>
+                                            let timerId_3 = null; // Variable to store the timer ID                                                
+                                            function fetchData_3() {
+                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
+                                                    .then(response => response.json()) // Convert the response to JSON format
+                                                    .then(data => {
+                                                        // Display the last item from the data array
+                                                        const lastItem = data[data.length - 1];
+                                                        const formattedItem = `</p><strong>Last measured value:</strong> ${lastItem.mean_ambient_humidity} <strong>Mean value:</strong> ${lastItem.mean_ambient_humidity}</p>`;
+                                                        document.getElementById('data-container-3').innerHTML = formattedItem;
+                                                    })
+                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                            }
+                                        
+                                            // Fetch data initially
+                                            fetchData_3();
+                                        
+                                            // Fetch data and display every 5 seconds (for example)
+                                            setInterval(() => {
+                                                fetchData_3(); // Fetch data from the API
+                                            }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
+                                        </script>
+                                       
+                                    </div>
+                                    <!-- <div class="col">
                                         <h4 class="m-0">38.23%</h4>
-                                        <span>Last measured value</span>
+                                        <span>Last measured value</span> 
                                     </div>
                                     <div class="col">
                                         <h4 class="m-0">38,76%</h4>
                                         <span>Mean value</span>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                             <!-- <div id="support-chart1"></div> -->
@@ -133,7 +185,33 @@
                             </div>
                             <div class="card-footer border-0">
                                 <div class="row text-center">
-                                    <div class="col">
+                                    <div id="data-container-4" class="m-0">
+                                        <!-- Data will be displayed here -->
+                                        <script>
+                                            let timerId_4 = null; // Variable to store the timer ID                                                
+                                            function fetchData_4() {
+                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
+                                                    .then(response => response.json()) // Convert the response to JSON format
+                                                    .then(data => {
+                                                        // Display the last item from the data array
+                                                        const lastItem = data[data.length - 1];
+                                                        const formattedItem = `</p><strong>Last measured value:</strong> ${lastItem.mean_cavity_temperature} <strong>Mean value:</strong> ${lastItem.mean_cavity_temperature}</p>`;
+                                                        document.getElementById('data-container-4').innerHTML = formattedItem;
+                                                    })
+                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                            }
+                                        
+                                            // Fetch data initially
+                                            fetchData_4();
+                                        
+                                            // Fetch data and display every 5 seconds (for example)
+                                            setInterval(() => {
+                                                fetchData_4(); // Fetch data from the API
+                                            }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
+                                        </script>
+                                       
+                                    </div>
+                                    <!-- <div class="col">
                                         <h4 class="m-0">105.12°C</h4>
                                         <span>Last measured value</span>
                                     </div>
@@ -144,7 +222,7 @@
                                     <div class="col">
                                         <h4 class="m-0">110°C</h4>
                                         <span>Set value in machine</span>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                             <!-- <div id="support-chart1"></div> -->
@@ -157,51 +235,38 @@
                                 <span class="text-primary">Cycles</span>
                                 <!-- <p class="mb-3 mt-3">Total number of manufactured parts</p> -->
                             </div>
-                            <div id="data-container">
-                                <!-- Data will be displayed here -->
+                            <div class="card-footer border-0">
+                                <div class="row text-center">
+                                    <div id="data-container" class="m-0">
+                                        <!-- Data will be displayed here -->
+                                        <script>
+                                            let timerId = null; // Variable to store the timer ID
+                                        
+                                            function fetchData() {
+                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
+                                                    .then(response => response.json()) // Convert the response to JSON format
+                                                    .then(data => {
+                                                        // Display the last item from the data array
+                                                        const lastItem = data[data.length - 1];
+                                                        const formattedItem = `</p><strong> Number: </strong>${lastItem.cycle_nr}</p>`;
+                                                        document.getElementById('data-container').innerHTML = formattedItem;
+                                                    })
+                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                            }
+                                        
+                                            // Fetch data initially
+                                            fetchData();
+                                        
+                                            // Fetch data and display every 5 seconds (for example)
+                                            setInterval(() => {
+                                                fetchData(); // Fetch data from the API
+                                            }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
+                                        </script>
+                                       
+                                    </div>
+                                </div>
                             </div>
-                        
-                            <script>
-                                let timerId = null; // Variable to store the timer ID
-                        
-                                function fetchData() {
-                                    fetch('/api/arduino-results/') // Replace with your Django API endpoint
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            // Sort the data based on the 'ID' field in ascending order
-                                            data.sort((a, b) => a.ID - b.ID);
-                        
-                                            displayDataSequentially(data);
-                                        })
-                                        .catch(error => console.error('Error fetching data:', error));
-                                }
-                        
-                                function displayDataSequentially(data) {
-                                    let currentIndex = 0;
-                        
-                                    function displayNextItem() {
-                                        if (currentIndex < data.length) {
-                                            const currentItem = data[currentIndex];
-                                            const formattedItem = `<p>ID: ${currentItem.ID}, Cycle Number: ${currentItem.cycle_nr}</p>`;
-                                            document.getElementById('data-container').innerHTML = formattedItem;
-                                            currentIndex++;
-                        
-                                            timerId = setTimeout(displayNextItem, 2000); // Display next item after 2 seconds
-                                        }
-                                    }
-                        
-                                    displayNextItem();
-                                }
-                        
-                                // Fetch data initially
-                                fetchData();
-                        
-                                // Fetch data and display every 5 seconds (for example)
-                                setInterval(() => {
-                                    // clearTimeout(timerId); // Clear previous timer before starting a new sequence
-                                    fetchData();
-                                }, 1000);
-                            </script>
+                            
                             <!-- <div class="card-footer border-0">
                                 <div class="row text-center">
                                     <div class="col">
@@ -235,7 +300,31 @@
                             </div>
                             <div class="card-footer border-0">
                                 <div class="row text-center">
-                                    <div class="col">
+                                    <div id="data-container-5" class="m-0">
+                                        <script>
+                                            let timerId_5 = null; // Variable to store the timer ID                                                
+                                            function fetchData_5() {
+                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
+                                                    .then(response => response.json()) // Convert the response to JSON format
+                                                    .then(data => {
+                                                        // Display the last item from the data array
+                                                        const lastItem = data[data.length - 1];
+                                                        const formattedItem = `</p><strong>Last measured value:</strong> ${lastItem.mean_cavity_pressure} <strong>Mean value:</strong> ${lastItem.mean_cavity_pressure}</p>`;
+                                                        document.getElementById('data-container-5').innerHTML = formattedItem;
+                                                    })
+                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                            }
+                                        
+                                            // Fetch data initially
+                                            fetchData_5();
+                                        
+                                            // Fetch data and display every 5 seconds (for example)
+                                            setInterval(() => {
+                                                fetchData_5(); // Fetch data from the API
+                                            }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
+                                        </script>
+                                    </div>
+                                    <!-- <div class="col">
                                         <h4 class="m-0">993 Bar</h4>
                                         <span>Last measured value</span>
                                     </div>
@@ -246,7 +335,7 @@
                                     <div class="col">
                                         <h4 class="m-0">1000 Bar</h4>
                                         <span>Set value in machine</span>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                             <!-- <div id="support-chart1"></div> -->
@@ -261,7 +350,31 @@
                             </div>
                             <div class="card-footer border-0">
                                 <div class="row text-center">
-                                    <div class="col">
+                                    <div id="data-container-6" class="m-0">
+                                        <script>
+                                            let timerId_6 = null; // Variable to store the timer ID                                                
+                                            function fetchData_6() {
+                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
+                                                    .then(response => response.json()) // Convert the response to JSON format
+                                                    .then(data => {
+                                                        // Display the last item from the data array
+                                                        const lastItem = data[data.length - 1];
+                                                        const formattedItem = `</p><strong>Last measured value:</strong> ${lastItem.mean_closing_force} <strong>Mean value:</strong> ${lastItem.mean_closing_force}</p>`;
+                                                        document.getElementById('data-container-6').innerHTML = formattedItem;
+                                                    })
+                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                            }
+                                        
+                                            // Fetch data initially
+                                            fetchData_6();
+                                        
+                                            // Fetch data and display every 5 seconds (for example)
+                                            setInterval(() => {
+                                                fetchData_6(); // Fetch data from the API
+                                            }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
+                                        </script>
+                                    </div>
+                                    <!-- <div class="col">
                                         <h4 class="m-0">411 kN</h4>
                                         <span>Last measured value</span>
                                     </div>
@@ -272,7 +385,7 @@
                                     <div class="col">
                                         <h4 class="m-0">500 kN</h4>
                                         <span>Set value in machine</span>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                             <!-- <div id="support-chart1"></div> -->

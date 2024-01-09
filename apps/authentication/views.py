@@ -64,5 +64,6 @@ def my_view(request):
     return render(request, "home/index.html", {"data": data})
 
 def arduino_results_api(request):
-    data = list(ArduinoResults.objects.filter(ID__gt=0).values('ID', 'cycle_nr'))
+    data = list(ArduinoResults.objects.filter(ID__gt=0).values('ID', 'cycle_nr', 'mean_ambient_temperature', 'mean_ambient_humidity',
+                                                          'mean_cavity_temperature', 'mean_cavity_pressure', 'mean_closing_force'))
     return JsonResponse(data, safe=False)
