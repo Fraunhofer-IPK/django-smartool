@@ -107,7 +107,7 @@
                                             // Fetch data initially
                                             fetchData_2();
                                         
-                                            // Fetch data and display every 5 seconds (for example)
+                                            // Fetch data and display every 1 seconds (for example)
                                             setInterval(() => {
                                                 fetchData_2(); // Fetch data from the API
                                             }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
@@ -155,7 +155,7 @@
                                             // Fetch data initially
                                             fetchData_3();
                                         
-                                            // Fetch data and display every 5 seconds (for example)
+                                            // Fetch data and display every 1 seconds (for example)
                                             setInterval(() => {
                                                 fetchData_3(); // Fetch data from the API
                                             }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
@@ -204,7 +204,7 @@
                                             // Fetch data initially
                                             fetchData_4();
                                         
-                                            // Fetch data and display every 5 seconds (for example)
+                                            // Fetch data and display every 1 seconds (for example)
                                             setInterval(() => {
                                                 fetchData_4(); // Fetch data from the API
                                             }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
@@ -257,7 +257,7 @@
                                             // Fetch data initially
                                             fetchData();
                                         
-                                            // Fetch data and display every 5 seconds (for example)
+                                            // Fetch data and display every 1 seconds (for example)
                                             setInterval(() => {
                                                 fetchData(); // Fetch data from the API
                                             }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
@@ -318,7 +318,7 @@
                                             // Fetch data initially
                                             fetchData_5();
                                         
-                                            // Fetch data and display every 5 seconds (for example)
+                                            // Fetch data and display every 1 seconds (for example)
                                             setInterval(() => {
                                                 fetchData_5(); // Fetch data from the API
                                             }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
@@ -359,7 +359,9 @@
                                                     .then(data => {
                                                         // Display the last item from the data array
                                                         const lastItem = data[data.length - 1];
+                                                        // Create a formatted string to display data
                                                         const formattedItem = `</p><strong>Last measured value:</strong> ${lastItem.mean_closing_force} <strong>Mean value:</strong> ${lastItem.mean_closing_force}</p>`;
+                                                        // Update the HTML content 
                                                         document.getElementById('data-container-6').innerHTML = formattedItem;
                                                     })
                                                     .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
@@ -368,7 +370,7 @@
                                             // Fetch data initially
                                             fetchData_6();
                                         
-                                            // Fetch data and display every 5 seconds (for example)
+                                            // Fetch data and display every 1 seconds (for example)
                                             setInterval(() => {
                                                 fetchData_6(); // Fetch data from the API
                                             }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)

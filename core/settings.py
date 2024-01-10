@@ -80,14 +80,14 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DB_NAME', default='arduino'),
-        'USER': config('DB_USER', default='ipk'),
-        'PASSWORD': config('DB_PASSWORD', default='fraunhoferipk'),
-        'HOST': config('DB_HOST', default='192.168.137.1'),
-        'PORT': config('DB_PORT', default='3306'),
+        'ENGINE': 'django.db.backends.mysql',# Specifies the database engine to use (MySQL in that case)
+        'NAME': config('DB_NAME', default='arduino'),# Sets the db name 
+        'USER': config('DB_USER', default='ipk'),# Sets the db user
+        'PASSWORD': config('DB_PASSWORD', default='fraunhoferipk'),# Sets the db user´s password
+        'HOST': config('DB_HOST', default='192.168.137.1'),# Sets tje db host
+        'PORT': config('DB_PORT', default='3306'),# Sets the db port
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"# Sets an initial SQL command to 'STRICT_TRANS_TABLES', which enforces strict mode for transactional tables in MySQL
         }
     }
 }
