@@ -6042,6 +6042,7 @@ textarea.form-control-lg {
 
 /* rtl:end:remove */
 .text-primary {
+  font-size: 21px;
   --bs-text-opacity: 1;
   color: rgba(var(--bs-primary-rgb), var(--bs-text-opacity)) !important; }
 

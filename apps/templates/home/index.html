@@ -98,7 +98,8 @@
                                                     .then(data => {
                                                         // Display the last item from the data array
                                                         const lastItem = data[data.length - 1];
-                                                        const formattedItem = `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_ambient_temperature} <strong>Mean value:</strong> ${lastItem.mean_ambient_temperature}</p>`;
+                                                        const formattedItem =   `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_ambient_temperature} °C</p>
+                                                                                <p style="font-size: 20px;"><strong>Mean value:</strong> ${lastItem.mean_ambient_temperature} °C</p>`;
                                                         document.getElementById('data-container-2').innerHTML = formattedItem;
                                                     })
                                                     .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
@@ -146,7 +147,8 @@
                                                     .then(data => {
                                                         // Display the last item from the data array
                                                         const lastItem = data[data.length - 1];
-                                                        const formattedItem = `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_ambient_humidity} <strong>Mean value:</strong> ${lastItem.mean_ambient_humidity}</p>`;
+                                                        const formattedItem =   `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_ambient_humidity} %</p>
+                                                                                <p style="font-size: 20px;"><strong>Mean value:</strong> ${lastItem.mean_ambient_humidity} %</p>`;
                                                         document.getElementById('data-container-3').innerHTML = formattedItem;
                                                     })
                                                     .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
@@ -195,7 +197,9 @@
                                                     .then(data => {
                                                         // Display the last item from the data array
                                                         const lastItem = data[data.length - 1];
-                                                        const formattedItem = `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_cavity_temperature} <strong>Mean value:</strong> ${lastItem.mean_cavity_temperature}</p>`;
+                                                        const formattedItem =   `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_cavity_temperature} °C</p>
+                                                                                <p style="font-size: 20px;"><strong>Mean value:</strong> ${lastItem.mean_cavity_temperature} °C</p>
+                                                                                <p style="font-size: 20px;"><strong>Set value in machine:</strong> 110 °C</p>`;
                                                         document.getElementById('data-container-4').innerHTML = formattedItem;
                                                     })
                                                     .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
@@ -232,7 +236,123 @@
                         <div class="card support-bar overflow-hidden">
                             <div class="card-body pb-0">
                                 <!-- <h2 class="m-0">131,927</h2> -->
-                                <span class="text-primary">Cycles</span>
+                                <span class="text-primary">Clampling Force</span>
+                                <!-- <p class="mb-3 mt-3">Total number of manufactured parts</p> -->
+                            </div>
+                            <div class="card-footer border-0">
+                                <div class="row text-center">
+                                    <div id="data-container-6" class="m-0">
+                                        <script>
+                                            let timerId_6 = null; // Variable to store the timer ID                                                
+                                            function fetchData_6() {
+                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
+                                                    .then(response => response.json()) // Convert the response to JSON format
+                                                    .then(data => {
+                                                        // Display the last item from the data array
+                                                        const lastItem = data[data.length - 1];
+                                                        // Create a formatted string to display data
+                                                        const formattedItem =   `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${formatNumber(lastItem.mean_closing_force)} kN</p> 
+                                                                                <p style="font-size: 20px;"><strong>Mean value:</strong> ${formatNumber(lastItem.mean_closing_force)} kN</p>
+                                                                                <p style="font-size: 20px;"><strong>Set value in machine:</strong> 500 kN</p>`;
+                                                        // const formattedItem = `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_closing_force} <strong>Mean value:</strong> ${lastItem.mean_closing_force}</p>`;
+                                                        // Update the HTML content 
+                                                        document.getElementById('data-container-6').innerHTML = formattedItem;
+                                                    })
+                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                            }
+                                            function formatNumber(number) {
+                                                // Use toLocaleString to format the number with dots for thousands
+                                                return number.toLocaleString();
+                                            }
+                                            // Fetch data initially
+                                            fetchData_6();
+                                        
+                                            // Fetch data and display every 1 seconds (for example)
+                                            setInterval(() => {
+                                                fetchData_6(); // Fetch data from the API
+                                            }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
+                                        </script>
+                                    </div>
+                                    <!-- <div class="col">
+                                        <h4 class="m-0">411 kN</h4>
+                                        <span>Last measured value</span>
+                                    </div>
+                                    <div class="col">
+                                        <h4 class="m-0">482 kN</h4>
+                                        <span>Mean value</span>
+                                    </div>
+                                    <div class="col">
+                                        <h4 class="m-0">500 kN</h4>
+                                        <span>Set value in machine</span>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <!-- <div id="support-chart1"></div> -->
+                        </div>
+                    </div>
+                
+                    <div class="col-md-6">
+                        <div class="card support-bar overflow-hidden">
+                            <div class="card-body pb-0">
+                                <!-- <h2 class="m-0">131,927</h2> -->
+                                <span class="text-primary">Cavity Pressure</span>
+                                <!-- <p class="mb-3 mt-3">Total number of manufactured parts</p> -->
+                            </div>
+                            <div class="card-footer border-0">
+                                <div class="row text-center">
+                                    <div id="data-container-5" class="m-0">
+                                        <script>
+                                            let timerId_5 = null; // Variable to store the timer ID                                                
+                                            function fetchData_5() {
+                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
+                                                    .then(response => response.json()) // Convert the response to JSON format
+                                                    .then(data => {
+                                                        // Display the last item from the data array
+                                                        const lastItem = data[data.length - 1];
+                                                        const formattedItem =   `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${formatNumber(lastItem.mean_cavity_pressure)} Bar</p>
+                                                                                <p style="font-size: 20px;"><strong>Mean value:</strong> ${formatNumber(lastItem.mean_cavity_pressure)} Bar</p>
+                                                                                <p style="font-size: 20px;"><strong>Set value in machine:</strong> 1000 Bar`;
+                                                        //const formattedItem = `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_cavity_pressure} <strong>Mean value:</strong> ${lastItem.mean_cavity_pressure}</p>`;
+                                                        document.getElementById('data-container-5').innerHTML = formattedItem;
+                                                    })
+                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                            }
+                                            function formatNumber(number) {
+                                                // Use toLocaleString to format the number with dots for thousands
+                                                return number.toLocaleString();
+                                            }
+                                        
+                                            // Fetch data initially
+                                            fetchData_5();
+                                        
+                                            // Fetch data and display every 1 seconds (for example)
+                                            setInterval(() => {
+                                                fetchData_5(); // Fetch data from the API
+                                            }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
+                                        </script>
+                                    </div>
+                                    <!-- <div class="col">
+                                        <h4 class="m-0">993 Bar</h4>
+                                        <span>Last measured value</span>
+                                    </div>
+                                    <div class="col">
+                                        <h4 class="m-0">961 Bar</h4>
+                                        <span>Mean value</span>
+                                    </div>
+                                    <div class="col">
+                                        <h4 class="m-0">1000 Bar</h4>
+                                        <span>Set value in machine</span>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <!-- <div id="support-chart1"></div> -->
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card support-bar overflow-hidden">
+                            <div class="card-body pb-0">
+                                <!-- <h2 class="m-0">131,927</h2> -->
+                                <span class="text-primary">Cycles until Overhaul</span>
                                 <!-- <p class="mb-3 mt-3">Total number of manufactured parts</p> -->
                             </div>
                             <div class="card-footer border-0">
@@ -294,126 +414,13 @@
                             </div> 
                             <div id="support-chart1"></div> -->
                         </div>
-                    </div>
-                
-                    <div class="col-md-6">
-                        <div class="card support-bar overflow-hidden">
-                            <div class="card-body pb-0">
-                                <!-- <h2 class="m-0">131,927</h2> -->
-                                <span class="text-primary">Cavity Pressure</span>
-                                <!-- <p class="mb-3 mt-3">Total number of manufactured parts</p> -->
-                            </div>
-                            <div class="card-footer border-0">
-                                <div class="row text-center">
-                                    <div id="data-container-5" class="m-0">
-                                        <script>
-                                            let timerId_5 = null; // Variable to store the timer ID                                                
-                                            function fetchData_5() {
-                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
-                                                    .then(response => response.json()) // Convert the response to JSON format
-                                                    .then(data => {
-                                                        // Display the last item from the data array
-                                                        const lastItem = data[data.length - 1];
-                                                        const formattedItem = `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${formatNumber(lastItem.mean_cavity_pressure)} <strong>Mean value:</strong> ${formatNumber(lastItem.mean_cavity_pressure)}</p>`;
-                                                        //const formattedItem = `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_cavity_pressure} <strong>Mean value:</strong> ${lastItem.mean_cavity_pressure}</p>`;
-                                                        document.getElementById('data-container-5').innerHTML = formattedItem;
-                                                    })
-                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
-                                            }
-                                            function formatNumber(number) {
-                                                // Use toLocaleString to format the number with dots for thousands
-                                                return number.toLocaleString();
-                                            }
-                                        
-                                            // Fetch data initially
-                                            fetchData_5();
-                                        
-                                            // Fetch data and display every 1 seconds (for example)
-                                            setInterval(() => {
-                                                fetchData_5(); // Fetch data from the API
-                                            }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
-                                        </script>
-                                    </div>
-                                    <!-- <div class="col">
-                                        <h4 class="m-0">993 Bar</h4>
-                                        <span>Last measured value</span>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="m-0">961 Bar</h4>
-                                        <span>Mean value</span>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="m-0">1000 Bar</h4>
-                                        <span>Set value in machine</span>
-                                    </div> -->
-                                </div>
-                            </div>
-                            <!-- <div id="support-chart1"></div> -->
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card support-bar overflow-hidden">
-                            <div class="card-body pb-0">
-                                <!-- <h2 class="m-0">131,927</h2> -->
-                                <span class="text-primary">Clampling Force</span>
-                                <!-- <p class="mb-3 mt-3">Total number of manufactured parts</p> -->
-                            </div>
-                            <div class="card-footer border-0">
-                                <div class="row text-center">
-                                    <div id="data-container-6" class="m-0">
-                                        <script>
-                                            let timerId_6 = null; // Variable to store the timer ID                                                
-                                            function fetchData_6() {
-                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
-                                                    .then(response => response.json()) // Convert the response to JSON format
-                                                    .then(data => {
-                                                        // Display the last item from the data array
-                                                        const lastItem = data[data.length - 1];
-                                                        // Create a formatted string to display data
-                                                        const formattedItem = `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${formatNumber(lastItem.mean_closing_force)} <strong>Mean value:</strong> ${formatNumber(lastItem.mean_closing_force)}</p>`;
-                                                        // const formattedItem = `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_closing_force} <strong>Mean value:</strong> ${lastItem.mean_closing_force}</p>`;
-                                                        // Update the HTML content 
-                                                        document.getElementById('data-container-6').innerHTML = formattedItem;
-                                                    })
-                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
-                                            }
-                                            function formatNumber(number) {
-                                                // Use toLocaleString to format the number with dots for thousands
-                                                return number.toLocaleString();
-                                            }
-                                            // Fetch data initially
-                                            fetchData_6();
-                                        
-                                            // Fetch data and display every 1 seconds (for example)
-                                            setInterval(() => {
-                                                fetchData_6(); // Fetch data from the API
-                                            }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
-                                        </script>
-                                    </div>
-                                    <!-- <div class="col">
-                                        <h4 class="m-0">411 kN</h4>
-                                        <span>Last measured value</span>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="m-0">482 kN</h4>
-                                        <span>Mean value</span>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="m-0">500 kN</h4>
-                                        <span>Set value in machine</span>
-                                    </div> -->
-                                </div>
-                            </div>
-                            <!-- <div id="support-chart1"></div> -->
-                        </div>
-                    </div>
-                
+                    </div>          
                 
                     <div class="col-xl-6 col-md-12">
                         <div class="card support-bar overflow-hidden">
                             <div class="card-body pb-0">
                                 <!-- <h2 class="m-0">131,927</h2> -->
-                                <span class="text-primary">Location STRACK</span>
+                                <span class="text-primary">Location</span>
                                 
                                 <!-- <p class="mb-3 mt-3">Total number of manufactured parts</p> -->
                             </div>
