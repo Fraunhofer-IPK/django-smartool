@@ -10,6 +10,8 @@ from .forms import LoginForm, SignUpForm
 from .models import ArduinoResults  # Import your model
 from django.http import JsonResponse
 
+
+
 def login_view(request):
     form = LoginForm(request.POST or None)
 
@@ -60,8 +62,8 @@ def register_user(request):
 def my_view(request):
     # Fetch data from the model
     data = ArduinoResults.objects.filter(ID__gt=0).values('ID', 'cycle_nr')
-    
     return render(request, "home/index.html", {"data": data})
+    
 
 def arduino_results_api(request):
     data = list(ArduinoResults.objects.filter(ID__gt=0).values('ID', 'cycle_nr', 'mean_ambient_temperature', 'mean_ambient_humidity',
