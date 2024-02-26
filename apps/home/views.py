@@ -8,14 +8,21 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
+import json
+import requests
+
 
 
 @login_required(login_url="/login/")
 def index(request):
-    context = {'segment': 'index'}
-
+    r = requests.get('https://stickntrack.sensolus.com/rest/api/v2/devices/W4GU2J/data/aggregated/location/latest?apiKey=2fcc0c5d4181422ca5f8272938e96b9f')
+    if r.status_code != 200:
+        raise Exception ('Failed requesting location of device W4GU2J')
+    pos = json.loads(r.text)
+    print(json.dumps(r.text))
     html_template = loader.get_template('home/index.html')
-    return HttpResponse(html_template.render(context, request))
+    context = {'segment': 'index', 'lng': pos['lng'], 'lat': pos['lat']}
+    return HttpResponse(html_template.render(context, request)) 
 
 
 @login_required(login_url="/login/")
