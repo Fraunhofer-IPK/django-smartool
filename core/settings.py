@@ -97,7 +97,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',# Specifies the database engine to use (MySQL in that case)
         'NAME': config('DB_NAME', default='arduino'),# Sets the db name 
         'USER': config('DB_USER', default='root'),# Sets the db user
-        'PASSWORD': config('DB_PASSWORD', default=''),# Sets the db user´s password
+        'PASSWORD': config('DB_PASSWORD', default='ipk123456'),# Sets the db user´s password
         'HOST': config('DB_HOST', default='127.0.0.1'),# Sets tje db host
         'PORT': config('DB_PORT', default='3306'),# Sets the db port
         'OPTIONS': {
