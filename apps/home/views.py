@@ -19,9 +19,9 @@ def index(request):
     if r.status_code != 200:
         raise Exception ('Failed requesting location of device W4GU2J')
     pos = json.loads(r.text)
-    print(json.dumps(r.text))
+    # print(json.dumps(r.text))
     html_template = loader.get_template('home/index.html')
-    context = {'segment': 'index', 'lng': pos['lng'], 'lat': pos['lat']}
+    context = {'segment': 'index', 'lng': pos['lng'], 'lat': pos['lat'], 'box_lng_left': pos['lng'] - 0.01, 'box_lat_bottom': pos['lat'] - 0.01, 'box_lng_right': pos['lng'] + 0.01, 'box_lat_top':pos['lat'] + 0.01}
     return HttpResponse(html_template.render(context, request)) 
 
 

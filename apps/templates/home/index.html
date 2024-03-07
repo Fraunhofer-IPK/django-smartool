@@ -429,7 +429,7 @@
                                     <div class="col">
                                         <div style="position:relative; padding-bottom:75%; height:0; overflow:hidden; padding-right: 100%;">
                                             <iframe
-                                                src="https://www.openstreetmap.org/export/embed.html?layer=mapnik&marker={{ lat }}%2C{{ lng }}"
+                                                src="https://www.openstreetmap.org/export/embed.html?bbox={{ box_lng_left }}%2C{{ box_lat_bottom }}%2C{{ box_lng_right}}%2C{{box_lat_top}}&amp;layer=mapnik&marker={{ lat }}%2C{{ lng }}"
                                                 style="position:absolute; width:100%; height:100%; border: 1px solid rgb(255, 255, 255);"
                                                 allowfullscreen>
                                             </iframe>
