@@ -90,39 +90,104 @@
                                 <div class="row text-center">
                                     <div id="data-container-2" class="m-0">
                                         <!-- Data will be displayed here -->
+                                        <canvas id="temperature-chart"></canvas>
                                         <script>
                                             let timerId_2 = null; // Variable to store the timer ID                                                
-                                            function fetchData_2() {
-                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
-                                                    .then(response => response.json()) // Convert the response to JSON format
-                                                    .then(data => {
-                                                        // Display the last item from the data array
-                                                        const lastItem = data[data.length - 1];
-                                                        const formattedItem =   `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_ambient_temperature} °C</p>
-                                                                                <p style="font-size: 20px;"><strong>Mean value:</strong> ${lastItem.mean_ambient_temperature} °C</p>`;
-                                                        document.getElementById('data-container-2').innerHTML = formattedItem;
-                                                    })
-                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                            let chartData = {
+                                                labels: [],
+                                                datasets: [{
+                                                    label: 'Ambient Temperature Chart',
+                                                    data: [],
+                                                    borderColor: 'blue',
+                                                    backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                                                }]
+                                            };
+                                    
+                                            let temperatureChart = null;
+                                    
+                                            // Function to draw or update the chart
+                                            function drawOrUpdateChart(newDataPoint, newLabel) {
+                                                if (chartData.labels.length >= 50) {
+                                                    chartData.labels.shift();
+                                                    chartData.datasets[0].data.shift();
+                                                }
+                                                chartData.labels.push(newLabel);
+                                                chartData.datasets[0].data.push(newDataPoint);
+                                    
+                                                if (temperatureChart) {
+                                                    temperatureChart.update();
+                                                } else {
+                                                    const ctx = document.getElementById('temperature-chart').getContext('2d');
+                                                    temperatureChart = new Chart(ctx, {
+                                                        type: 'line',
+                                                        data: chartData,
+                                                        options: {
+                                                            scales: {
+                                                                y: {
+                                                                    beginAtZero: true,
+                                                                    title: {
+                                                                        display: true,
+                                                                        text: 'Temperature (°C)',
+                                                                        font: {
+                                                                            size: 14
+                                                                        }
+                                                                    }
+                                                                },
+                                                                x: {
+                                                                    title: {
+                                                                        display: true,
+                                                                        text: 'Cycle Number',
+                                                                        font: {
+                                                                            size: 14
+                                                                        }
+                                                                    }
+                                                                },
+                                                                legend: {
+                                                                    display: false // Set display to false to remove the legend box
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
                                             }
-                                        
-                                            // Fetch data initially
-                                            fetchData_2();
-                                        
-                                            // Fetch data and display every 1 seconds (for example)
+                                    
+                                            // Fetch data initially and update chart
+                                            function fetchDataAndDrawOrUpdateChart() {
+                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        const lastItem = data[data.length - 1];
+                                                        const temperature = lastItem.mean_ambient_temperature;
+                                                        const cycleNr = lastItem.cycle_nr; // Assuming there's a cycle_nr field
+                                    
+                                                        // Update textual data
+                                                        const formattedItem = `<div style="font-size: 25px; display: inline-block;">
+                                                                                   <strong>Last measured value:</strong> ${temperature} °C
+                                                                                </div>
+                                                                                <div style="font-size: 25px; display: inline-block;">
+                                                                                   <strong> Mean value:</strong> ${temperature} °C
+                                                                                </div>`;
+                                                        document.getElementById('data-container-2').innerHTML = formattedItem;
+                                    
+                                                        // Draw or update the chart
+                                                        drawOrUpdateChart(temperature, cycleNr);
+                                                    })
+                                                    .catch(error => console.error('Error fetching data:', error));
+                                            }
+                                    
+                                            // Fetch data initially and update chart
+                                            fetchDataAndDrawOrUpdateChart();
+                                    
+                                            // Fetch data and update chart every 1 second
                                             setInterval(() => {
-                                                fetchData_2(); // Fetch data from the API
+                                                fetchDataAndDrawOrUpdateChart();
                                             }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
                                         </script>
-                                       
+
                                     </div>
-                                    <!-- <div class="col">
-                                        <h4 class="m-0">38.23°C</h4>
-                                        <span>Last measured value</span>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="m-0">38,76°C</h4>
-                                        <span>Mean value</span>
-                                    </div> -->
+                                    
+                                    <canvas id="temperature-chart"></canvas>
+
                                 </div>
                             </div>
                             <!-- <div id="support-chart1"></div> -->
@@ -139,40 +204,106 @@
                                 <div class="row text-center">
                                     <div id="data-container-3" class="m-0">
                                         <!-- Data will be displayed here -->
+                                        <canvas id="humidity-chart"></canvas>
                                         <script>
                                             let timerId_3 = null; // Variable to store the timer ID                                                
-                                            function fetchData_3() {
-                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
-                                                    .then(response => response.json()) // Convert the response to JSON format
-                                                    .then(data => {
-                                                        // Display the last item from the data array
-                                                        const lastItem = data[data.length - 1];
-                                                        const formattedItem =   `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_ambient_humidity} %</p>
-                                                                                <p style="font-size: 20px;"><strong>Mean value:</strong> ${lastItem.mean_ambient_humidity} %</p>`;
-                                                        document.getElementById('data-container-3').innerHTML = formattedItem;
-                                                    })
-                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                            let chartData_3 = {
+                                                labels: [],
+                                                datasets: [{
+                                                    label: 'Ambient Humidity Chart',
+                                                    data: [],
+                                                    borderColor: 'blue',
+                                                    backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                                                }]
+                                            };
+                                    
+                                            let humidityChart = null;
+                                    
+                                            // Function to draw or update the chart
+                                            function drawOrUpdateChart_3(newDataPoint, newLabel) {
+                                                if (chartData_3.labels.length >= 50) {
+                                                    chartData_3.labels.shift();
+                                                    chartData_3.datasets[0].data.shift();
+                                                }
+                                                chartData_3.labels.push(newLabel);
+                                                chartData_3.datasets[0].data.push(newDataPoint);
+                                    
+                                                if (humidityChart) {
+                                                    humidityChart.update();
+                                                } else {
+                                                    const ctx = document.getElementById('humidity-chart').getContext('2d');
+                                                    humidityChart = new Chart(ctx, {
+                                                        type: 'line',
+                                                        data: chartData_3,
+                                                        options: {
+                                                            scales: {
+                                                                y: {
+                                                                    beginAtZero: true,
+                                                                    title: {
+                                                                        display: true,
+                                                                        text: 'Humidity (%)',
+                                                                        font: {
+                                                                            size: 14
+                                                                        }
+                                                                    }
+                                                                },
+                                                                x: {
+                                                                    title: {
+                                                                        display: true,
+                                                                        text: 'Cycle Number',
+                                                                        font: {
+                                                                            size: 14
+                                                                        }
+                                                                    }
+                                                                },
+                                                                legend: {
+                                                                    display: false // Set display to false to remove the legend box
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
                                             }
-                                        
-                                            // Fetch data initially
-                                            fetchData_3();
-                                        
-                                            // Fetch data and display every 1 seconds (for example)
+                                    
+                                            // Fetch data initially and update chart
+                                            function fetchDataAndDrawOrUpdateChart_3() {
+                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        const lastItem = data[data.length - 1];
+                                                        const humidity = lastItem.mean_ambient_humidity;
+                                                        const cycleNr = lastItem.cycle_nr; // Assuming there's a cycle_nr field
+                                    
+                                                        // Update textual data
+                                                        const formattedItem = `<div style="font-size: 25px; display: inline-block;">
+                                                                                   <strong>Last measured value:</strong> ${humidity} %
+                                                                                </div>
+                                                                                <div style="font-size: 25px; display: inline-block;">
+                                                                                   <strong> Mean value:</strong> ${humidity} %
+                                                                                </div>`;
+                                                        document.getElementById('data-container-3').innerHTML = formattedItem;
+                                    
+                                                        // Draw or update the chart
+                                                        drawOrUpdateChart_3(humidity, cycleNr);
+                                                    })
+                                                    .catch(error => console.error('Error fetching data:', error));
+                                            }
+                                    
+                                            // Fetch data initially and update chart
+                                            fetchDataAndDrawOrUpdateChart_3();
+                                    
+                                            // Fetch data and update chart every 1 second
                                             setInterval(() => {
-                                                fetchData_3(); // Fetch data from the API
+                                                fetchDataAndDrawOrUpdateChart_3();
                                             }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
                                         </script>
-                                       
+
                                     </div>
-                                    <!-- <div class="col">
-                                        <h4 class="m-0">38.23%</h4>
-                                        <span>Last measured value</span> 
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="m-0">38,76%</h4>
-                                        <span>Mean value</span>
-                                    </div> -->
+
+                                    <canvas id="humidity-chart"></canvas>
+                                    
                                 </div>
+
                             </div>
                             <!-- <div id="support-chart1"></div> -->
                         </div>
@@ -458,5 +589,6 @@
 
     <script src="/static/assets/js/plugins/apexcharts.min.js"></script>
     <script src="/static/assets/js/pages/dashboard-sale.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 
 {% endblock javascripts %}
