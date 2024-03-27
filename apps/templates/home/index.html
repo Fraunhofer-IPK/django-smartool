@@ -62,22 +62,69 @@
                             <div class="card-footer border-0">
                                 <div class="row text-center">
                                     <div class="col">
-                                        <h4 class="m-0">131,927</h4>
-                                        <span>Parts produced</span>
+                                        <h4  style="font-size: 38px;" class="m-0">131,927</h4>
+                                        <h4  style="font-size: 16px;">Parts produced</h4>
                                     </div>
                                     <div class="col">
-                                        <h4 class="m-0">31,9276</h4>
-                                        <span>Parts out of tolerance</span>
+                                        <h4  style="font-size: 38px;" class="m-0">31,9276</h4>
+                                        <h4  style="font-size: 16px;">Parts out of tolerance</h4>
+                                        
                                     </div>
                                     <div class="col">
-                                        <h4 class="m-0 ">100,000</h4>
-                                        <span>Feasable parts</span>
+                                        <h4  style="font-size: 38px;" class="m-0 ">100,000</h4>
+                                        <h4  style="font-size: 16px;">Usable parts</h4>                                       
                                     </div>
                                 </div>
                             </div>
                             <!-- <div id="support-chart1"></div> -->
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <div class="card support-bar overflow-hidden">
+                            <div class="card-body pb-0">
+                                <!-- <h2 class="m-0">131,927</h2> -->
+                                <span class="text-primary">Cycles until Overhaul</span>
+                                <!-- <p class="mb-3 mt-3">Total number of manufactured parts</p> -->
+                            </div>
+                            <div class="card-footer border-0">
+                                <div class="row text-center">
+                                    <div id="data-container" class="m-0">
+                                        <!-- Data will be displayed here -->
+                                        <script>
+                                            let timerId = null; // Variable to store the timer ID
+                                        
+                                            function fetchData() {
+                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
+                                                    .then(response => response.json()) // Convert the response to JSON format
+                                                    .then(data => {
+                                                        // Display the last item from the data array
+                                                        const lastItem = data[data.length - 1];
+                                                        const formattedItem = `<p style="font-size: 25px;"><strong> Number:</strong> ${formatNumber(lastItem.cycle_nr)}/200,000</p>`;
+                                                        //const formattedItem = `<p style="font-size: 20px;"><strong> Number: </strong>${lastItem.cycle_nr}</p>`;
+                                                        document.getElementById('data-container').innerHTML = formattedItem;
+                                                    })
+                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                            }
+                                            function formatNumber(number) {
+                                                // Use toLocaleString to format the number with dots for thousands
+                                                return number.toLocaleString();
+                                            }
+                                        
+                                            // Fetch data initially
+                                            fetchData();
+                                        
+                                            // Fetch data and display every 1 seconds (for example)
+                                            setInterval(() => {
+                                                fetchData(); // Fetch data from the API
+                                            }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
+                                        </script>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>      
                 
                     <div class="col-md-6">
                         <div class="card support-bar overflow-hidden">
@@ -320,47 +367,111 @@
                                 <div class="row text-center">
                                     <div id="data-container-4" class="m-0">
                                         <!-- Data will be displayed here -->
+                                        <canvas id="cavity-temperature-chart"></canvas>
                                         <script>
                                             let timerId_4 = null; // Variable to store the timer ID                                                
-                                            function fetchData_4() {
-                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
-                                                    .then(response => response.json()) // Convert the response to JSON format
-                                                    .then(data => {
-                                                        // Display the last item from the data array
-                                                        const lastItem = data[data.length - 1];
-                                                        const formattedItem =   `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_cavity_temperature} °C</p>
-                                                                                <p style="font-size: 20px;"><strong>Mean value:</strong> ${lastItem.mean_cavity_temperature} °C</p>
-                                                                                <p style="font-size: 20px;"><strong>Set value in machine:</strong> 110 °C</p>`;
-                                                        document.getElementById('data-container-4').innerHTML = formattedItem;
-                                                    })
-                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                            let chartData_4 = {
+                                                labels: [],
+                                                datasets: [{
+                                                    label: 'Cavity Temperature Chart',
+                                                    data: [],
+                                                    borderColor: 'blue',
+                                                    backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                                                }]
+                                            };
+                                    
+                                            let cavitytempChart = null;
+                                    
+                                            // Function to draw or update the chart
+                                            function drawOrUpdateChart_4(newDataPoint, newLabel) {
+                                                if (chartData_4.labels.length >= 50) {
+                                                    chartData_4.labels.shift();
+                                                    chartData_4.datasets[0].data.shift();
+                                                }
+                                                chartData_4.labels.push(newLabel);
+                                                chartData_4.datasets[0].data.push(newDataPoint);
+                                    
+                                                if (cavitytempChart) {
+                                                    cavitytempChart.update();
+                                                } else {
+                                                    const ctx = document.getElementById('cavity-temperature-chart').getContext('2d');
+                                                    cavitytempChart = new Chart(ctx, {
+                                                        type: 'line',
+                                                        data: chartData_4,
+                                                        options: {
+                                                            scales: {
+                                                                y: {
+                                                                    beginAtZero: true,
+                                                                    title: {
+                                                                        display: true,
+                                                                        text: 'Temperature (°C)',
+                                                                        font: {
+                                                                            size: 14
+                                                                        }
+                                                                    }
+                                                                },
+                                                                x: {
+                                                                    title: {
+                                                                        display: true,
+                                                                        text: 'Cycle Number',
+                                                                        font: {
+                                                                            size: 14
+                                                                        }
+                                                                    }
+                                                                },
+                                                                legend: {
+                                                                    display: false // Set display to false to remove the legend box
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
                                             }
-                                        
-                                            // Fetch data initially
-                                            fetchData_4();
-                                        
-                                            // Fetch data and display every 1 seconds (for example)
+                                    
+                                            // Fetch data initially and update chart
+                                            function fetchDataAndDrawOrUpdateChart_4() {
+                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        const lastItem = data[data.length - 1];
+                                                        const cavity = lastItem.mean_cavity_temperature;
+                                                        const cycleNr = lastItem.cycle_nr; // Assuming there's a cycle_nr field
+                                    
+                                                        // Update textual data
+                                                        const formattedItem = `<div style="font-size: 20px; display: inline-block;">
+                                                                                   <strong>Last measured value:</strong> ${cavity} °C
+                                                                                </div>
+                                                                                <div style="font-size: 20px; display: inline-block;">
+                                                                                   <strong> Mean value:</strong> ${cavity} °C
+                                                                                </div>
+                                                                                <div style="font-size: 20px; display: inline-block;">
+                                                                                    <strong>Set value in machine:</strong> 110 °C
+                                                                                </div>`;
+                                                        document.getElementById('data-container-4').innerHTML = formattedItem;
+                                    
+                                                        // Draw or update the chart
+                                                        drawOrUpdateChart_4(cavity, cycleNr);
+                                                    })
+                                                    .catch(error => console.error('Error fetching data:', error));
+                                            }
+                                    
+                                            // Fetch data initially and update chart
+                                            fetchDataAndDrawOrUpdateChart_4();
+                                    
+                                            // Fetch data and update chart every 1 second
                                             setInterval(() => {
-                                                fetchData_4(); // Fetch data from the API
+                                                fetchDataAndDrawOrUpdateChart_4();
                                             }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
                                         </script>
-                                       
+
                                     </div>
-                                    <!-- <div class="col">
-                                        <h4 class="m-0">105.12°C</h4>
-                                        <span>Last measured value</span>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="m-0">107.54°C</h4>
-                                        <span>Mean value</span>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="m-0">110°C</h4>
-                                        <span>Set value in machine</span>
-                                    </div> -->
+
+                                    <canvas id="cavity-temperature-chart"></canvas>
+                                    
                                 </div>
+                                
                             </div>
-                            <!-- <div id="support-chart1"></div> -->
+                            
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -373,50 +484,110 @@
                             <div class="card-footer border-0">
                                 <div class="row text-center">
                                     <div id="data-container-6" class="m-0">
+                                        <!-- Data will be displayed here -->
+                                        <canvas id="clamping-force-chart"></canvas>
                                         <script>
-                                            let timerId_6 = null; // Variable to store the timer ID                                                
-                                            function fetchData_6() {
+                                            let timerId_5 = null; // Variable to store the timer ID                                                
+                                            let chartData_5 = {
+                                                labels: [],
+                                                datasets: [{
+                                                    label: 'Clamping Force Chart',
+                                                    data: [],
+                                                    borderColor: 'blue',
+                                                    backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                                                }]
+                                            };
+                                    
+                                            let clampingforceChart = null;
+                                    
+                                            // Function to draw or update the chart
+                                            function drawOrUpdateChart_5(newDataPoint, newLabel) {
+                                                if (chartData_5.labels.length >= 50) {
+                                                    chartData_5.labels.shift();
+                                                    chartData_5.datasets[0].data.shift();
+                                                }
+                                                chartData_5.labels.push(newLabel);
+                                                chartData_5.datasets[0].data.push(newDataPoint);
+                                    
+                                                if (clampingforceChart) {
+                                                    clampingforceChart.update();
+                                                } else {
+                                                    const ctx = document.getElementById('clamping-force-chart').getContext('2d');
+                                                    clampingforceChart = new Chart(ctx, {
+                                                        type: 'line',
+                                                        data: chartData_5,
+                                                        options: {
+                                                            scales: {
+                                                                y: {
+                                                                    beginAtZero: true,
+                                                                    title: {
+                                                                        display: true,
+                                                                        text: 'Force (N)',
+                                                                        font: {
+                                                                            size: 14
+                                                                        }
+                                                                    }
+                                                                },
+                                                                x: {
+                                                                    title: {
+                                                                        display: true,
+                                                                        text: 'Cycle Number',
+                                                                        font: {
+                                                                            size: 14
+                                                                        }
+                                                                    }
+                                                                },
+                                                                legend: {
+                                                                    display: false // Set display to false to remove the legend box
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                    
+                                            // Fetch data initially and update chart
+                                            function fetchDataAndDrawOrUpdateChart_5() {
                                                 fetch('/api/arduino-results/') // Replace with your Django API endpoint
-                                                    .then(response => response.json()) // Convert the response to JSON format
+                                                    .then(response => response.json())
                                                     .then(data => {
-                                                        // Display the last item from the data array
                                                         const lastItem = data[data.length - 1];
-                                                        // Create a formatted string to display data
-                                                        const formattedItem =   `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${formatNumber(lastItem.mean_closing_force)} kN</p> 
-                                                                                <p style="font-size: 20px;"><strong>Mean value:</strong> ${formatNumber(lastItem.mean_closing_force)} kN</p>
-                                                                                <p style="font-size: 20px;"><strong>Set value in machine:</strong> 500 kN</p>`;
-                                                        // const formattedItem = `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_closing_force} <strong>Mean value:</strong> ${lastItem.mean_closing_force}</p>`;
-                                                        // Update the HTML content 
+                                                        const clamping = lastItem.mean_closing_force;
+                                                        const cycleNr = lastItem.cycle_nr; // Assuming there's a cycle_nr field
+                                    
+                                                        // Update textual data
+                                                        const formattedItem = `<div style="font-size: 20px; display: inline-block;">
+                                                                                   <strong>Last measured value:</strong> ${clamping} N
+                                                                                </div>
+                                                                                <div style="font-size: 20px; display: inline-block;">
+                                                                                   <strong> Mean value:</strong> ${clamping} N
+                                                                                </div>
+                                                                                <div style="font-size: 20px; display: inline-block;">
+                                                                                    <strong>Set value in machine:</strong> 350 kN
+                                                                                </div>`;
                                                         document.getElementById('data-container-6').innerHTML = formattedItem;
+                                    
+                                                        // Draw or update the chart
+                                                        drawOrUpdateChart_5(clamping, cycleNr);
                                                     })
-                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                                    .catch(error => console.error('Error fetching data:', error));
                                             }
-                                            function formatNumber(number) {
-                                                // Use toLocaleString to format the number with dots for thousands
-                                                return number.toLocaleString();
-                                            }
-                                            // Fetch data initially
-                                            fetchData_6();
-                                        
-                                            // Fetch data and display every 1 seconds (for example)
+                                    
+                                            // Fetch data initially and update chart
+                                            fetchDataAndDrawOrUpdateChart_5();
+                                    
+                                            // Fetch data and update chart every 1 second
                                             setInterval(() => {
-                                                fetchData_6(); // Fetch data from the API
+                                                fetchDataAndDrawOrUpdateChart_5();
                                             }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
                                         </script>
+
                                     </div>
-                                    <!-- <div class="col">
-                                        <h4 class="m-0">411 kN</h4>
-                                        <span>Last measured value</span>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="m-0">482 kN</h4>
-                                        <span>Mean value</span>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="m-0">500 kN</h4>
-                                        <span>Set value in machine</span>
-                                    </div> -->
+
+                                    <canvas id="clamping-force-chart"></canvas>
+                                    
                                 </div>
+                                
                             </div>
                             <!-- <div id="support-chart1"></div> -->
                         </div>
@@ -432,122 +603,117 @@
                             <div class="card-footer border-0">
                                 <div class="row text-center">
                                     <div id="data-container-5" class="m-0">
-                                        <script>
-                                            let timerId_5 = null; // Variable to store the timer ID                                                
-                                            function fetchData_5() {
-                                                fetch('/api/arduino-results/') // Replace with your Django API endpoint
-                                                    .then(response => response.json()) // Convert the response to JSON format
-                                                    .then(data => {
-                                                        // Display the last item from the data array
-                                                        const lastItem = data[data.length - 1];
-                                                        const formattedItem =   `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${formatNumber(lastItem.mean_cavity_pressure)} Bar</p>
-                                                                                <p style="font-size: 20px;"><strong>Mean value:</strong> ${formatNumber(lastItem.mean_cavity_pressure)} Bar</p>
-                                                                                <p style="font-size: 20px;"><strong>Set value in machine:</strong> 1000 Bar`;
-                                                        //const formattedItem = `<p style="font-size: 20px;"><strong>Last measured value:</strong> ${lastItem.mean_cavity_pressure} <strong>Mean value:</strong> ${lastItem.mean_cavity_pressure}</p>`;
-                                                        document.getElementById('data-container-5').innerHTML = formattedItem;
-                                                    })
-                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
-                                            }
-                                            function formatNumber(number) {
-                                                // Use toLocaleString to format the number with dots for thousands
-                                                return number.toLocaleString();
-                                            }
-                                        
-                                            // Fetch data initially
-                                            fetchData_5();
-                                        
-                                            // Fetch data and display every 1 seconds (for example)
-                                            setInterval(() => {
-                                                fetchData_5(); // Fetch data from the API
-                                            }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
-                                        </script>
-                                    </div>
-                                    <!-- <div class="col">
-                                        <h4 class="m-0">993 Bar</h4>
-                                        <span>Last measured value</span>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="m-0">961 Bar</h4>
-                                        <span>Mean value</span>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="m-0">1000 Bar</h4>
-                                        <span>Set value in machine</span>
-                                    </div> -->
-                                </div>
-                            </div>
-                            <!-- <div id="support-chart1"></div> -->
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card support-bar overflow-hidden">
-                            <div class="card-body pb-0">
-                                <!-- <h2 class="m-0">131,927</h2> -->
-                                <span class="text-primary">Cycles until Overhaul</span>
-                                <!-- <p class="mb-3 mt-3">Total number of manufactured parts</p> -->
-                            </div>
-                            <div class="card-footer border-0">
-                                <div class="row text-center">
-                                    <div id="data-container" class="m-0">
                                         <!-- Data will be displayed here -->
+                                        <canvas id="cavitiy-pressure-chart"></canvas>
                                         <script>
-                                            let timerId = null; // Variable to store the timer ID
-                                        
-                                            function fetchData() {
+                                            let timerId_6 = null; // Variable to store the timer ID                                                
+                                            let chartData_6 = {
+                                                labels: [],
+                                                datasets: [{
+                                                    label: 'Cavity Pressure Chart',
+                                                    data: [],
+                                                    borderColor: 'blue',
+                                                    backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                                                }]
+                                            };
+                                    
+                                            let cavitypressChart = null;
+                                    
+                                            // Function to draw or update the chart
+                                            function drawOrUpdateChart_6(newDataPoint, newLabel) {
+                                                if (chartData_6.labels.length >= 50) {
+                                                    chartData_6.labels.shift();
+                                                    chartData_6.datasets[0].data.shift();
+                                                }
+                                                chartData_6.labels.push(newLabel);
+                                                chartData_6.datasets[0].data.push(newDataPoint);
+                                    
+                                                if (cavitypressChart) {
+                                                    cavitypressChart.update();
+                                                } else {
+                                                    const ctx = document.getElementById('cavitiy-pressure-chart').getContext('2d');
+                                                    cavitypressChart = new Chart(ctx, {
+                                                        type: 'line',
+                                                        data: chartData_6,
+                                                        options: {
+                                                            scales: {
+                                                                y: {
+                                                                    beginAtZero: true,
+                                                                    title: {
+                                                                        display: true,
+                                                                        text: 'Pressure (Bar)',
+                                                                        font: {
+                                                                            size: 14
+                                                                        }
+                                                                    }
+                                                                },
+                                                                x: {
+                                                                    title: {
+                                                                        display: true,
+                                                                        text: 'Cycle Number',
+                                                                        font: {
+                                                                            size: 14
+                                                                        }
+                                                                    }
+                                                                },
+                                                                legend: {
+                                                                    display: false // Set display to false to remove the legend box
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                    
+                                            // Fetch data initially and update chart
+                                            function fetchDataAndDrawOrUpdateChart_6() {
                                                 fetch('/api/arduino-results/') // Replace with your Django API endpoint
-                                                    .then(response => response.json()) // Convert the response to JSON format
+                                                    .then(response => response.json())
                                                     .then(data => {
-                                                        // Display the last item from the data array
                                                         const lastItem = data[data.length - 1];
-                                                        const formattedItem = `<p style="font-size: 20px;"><strong> Number:</strong> ${formatNumber(lastItem.cycle_nr)}/200,000</p>`;
-                                                        //const formattedItem = `<p style="font-size: 20px;"><strong> Number: </strong>${lastItem.cycle_nr}</p>`;
-                                                        document.getElementById('data-container').innerHTML = formattedItem;
+                                                        const pressure = lastItem.mean_cavity_pressure;
+                                                        const cycleNr = lastItem.cycle_nr; // Assuming there's a cycle_nr field
+                                    
+                                                        // Update textual data
+                                                        const formattedItem = `<div style="font-size: 20px; display: inline-block;">
+                                                                                   <strong>Last measured value:</strong> ${pressure} Bar
+                                                                                </div>
+                                                                                <div style="font-size: 20px; display: inline-block;">
+                                                                                   <strong> Mean value:</strong> ${pressure} Bar
+                                                                                </div>
+                                                                                <div style="font-size: 20px; display: inline-block;">
+                                                                                    <strong>Set value in machine:</strong> 1000 Bar
+                                                                                </div>`;
+                                                        document.getElementById('data-container-5').innerHTML = formattedItem;
+                                    
+                                                        // Draw or update the chart
+                                                        drawOrUpdateChart_6(pressure, cycleNr);
                                                     })
-                                                    .catch(error => console.error('Error fetching data:', error)); // Handle errors if fetch fails
+                                                    .catch(error => console.error('Error fetching data:', error));
                                             }
-                                            function formatNumber(number) {
-                                                // Use toLocaleString to format the number with dots for thousands
-                                                return number.toLocaleString();
-                                            }
-                                        
-                                            // Fetch data initially
-                                            fetchData();
-                                        
-                                            // Fetch data and display every 1 seconds (for example)
+                                    
+                                            // Fetch data initially and update chart
+                                            fetchDataAndDrawOrUpdateChart_6();
+                                    
+                                            // Fetch data and update chart every 1 second
                                             setInterval(() => {
-                                                fetchData(); // Fetch data from the API
+                                                fetchDataAndDrawOrUpdateChart_6();
                                             }, 1000); // Set interval to fetch data every 1 second (1000 milliseconds)
                                         </script>
-                                       
+
                                     </div>
-                                </div>
-                            </div>
-                            
-                            <!-- <div class="card-footer border-0">
-                                <div class="row text-center">
-                                    <div class="col">
-                                         <h4 class="m-0"> item.cycle_nr </h4>
-                                        <span>Cycles until overhaul</span> 
-                                        {% for item in data %}
-                                        <div class="card">
-                                            <h3>ID: {{ item.ID }}</h3>
-                                            <p>Cycle Number: {{ item.cycle_nr }}</p>
-                                        </div>
-                                        {% endfor %}
-                                        {% if data %}
-                                            <p>Data exists!</p>
-                                        {% else %}
-                                            <p>No data available.</p>
-                                        {% endif %}
-                                    </div>
+
+                                    <canvas id="cavitiy-pressure-chart"></canvas>
                                     
                                 </div>
-                            </div> 
-                            <div id="support-chart1"></div> -->
+                                
+                            </div>
+                     
                         </div>
-                    </div>          
+                    </div>
+                        
                 
-                    <div class="col-xl-6 col-md-12">
+                    <div class="col-md-6">
                         <div class="card support-bar overflow-hidden">
                             <div class="card-body pb-0">
                                 <!-- <h2 class="m-0">131,927</h2> -->
@@ -558,7 +724,7 @@
                             <div class="card-footer border-0">
                                 <div class="row text-center">
                                     <div class="col">
-                                        <div style="position:relative; padding-bottom:75%; height:0; overflow:hidden; padding-right: 100%;">
+                                        <div style="position:relative; padding-bottom:55%; height:0; overflow:hidden; padding-right: 100%;">
                                             <iframe
                                                 src="https://www.openstreetmap.org/export/embed.html?bbox={{ box_lng_left }}%2C{{ box_lat_bottom }}%2C{{ box_lng_right}}%2C{{box_lat_top}}&amp;layer=mapnik&marker={{ lat }}%2C{{ lng }}"
                                                 style="position:absolute; width:100%; height:100%; border: 1px solid rgb(255, 255, 255);"
@@ -570,7 +736,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- <div id="support-chart1"></div> -->
                         </div>
                     </div>
                 </div>
